@@ -38,23 +38,15 @@ public class TipCalculatorController {
     @FXML
     private TextField totalTextField;
 
+    /**
+     * Deleted Method no longer needed
+     */
     // calculates and displays the tip and total amounts
-    @FXML
-    private void calculateButtonPressed(ActionEvent event) {
-        try {
-            BigDecimal amount = new BigDecimal(amountTextField.getText());
-            BigDecimal tip = amount.multiply(tipPercentage);
-            BigDecimal total = amount.add(tip);
+//    @FXML
+//    private void calculateButtonPressed(ActionEvent event) {
+//    }
 
-            tipTextField.setText(currency.format(tip));
-            totalTextField.setText(currency.format(total));
-        }
-        catch (NumberFormatException ex) {
-            amountTextField.setText("Enter amount");
-            amountTextField.selectAll();
-            amountTextField.requestFocus();
-        }
-    }
+
 
     // called by FXMLLoader to initialize the controller
     public void initialize() {
@@ -70,8 +62,42 @@ public class TipCalculatorController {
                         tipPercentage =
                                 BigDecimal.valueOf(newValue.intValue() / 100.0);
                         tipPercentageLabel.setText(percent.format(tipPercentage));
+                        calculate();
                     }
                 }
+
         );
+
+        // listener for changes to amountTextField value
+        amountTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                amountTextField.setText(newValue);
+                calculate();
+            }
+        });
+
+
     }
+
+    private void calculate() {
+        try {
+            BigDecimal amount = new BigDecimal(amountTextField.getText());
+            BigDecimal tip = amount.multiply(tipPercentage);
+            BigDecimal total = amount.add(tip);
+
+            tipTextField.setText(currency.format(tip));
+            totalTextField.setText(currency.format(total));
+        } catch (NumberFormatException ex) {
+            amountTextField.setText("Enter amount");
+            amountTextField.selectAll();
+            amountTextField.requestFocus();
+        }
+    }
+
+
+
+
+
+
 }
